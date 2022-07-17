@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "224424174986",
+    "project_id": "language-flashcard-fbafe",
+    "storage_bucket": "language-flashcard-fbafe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:224424174986:android:2786004da1b66689bf5473",
+        "android_client_info": {
+          "package_name": "com.example.languageflashcard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "224424174986-077on1kp0dgk7ivjaeqabihnrh6sfc8i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.languageflashcard",
+            "certificate_hash": "7007ee5019f071a9794feaaa8557723f404619d7"
+          }
+        },
+        {
+          "client_id": "224424174986-orortbl4dm0s1hoevsgnki81bjsrah0k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAN1_F61KV1pfF22nMVb__LuKZNWJvK_ms"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "224424174986-orortbl4dm0s1hoevsgnki81bjsrah0k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
