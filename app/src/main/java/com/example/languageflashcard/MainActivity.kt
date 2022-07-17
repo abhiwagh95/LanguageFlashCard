@@ -1,14 +1,10 @@
 package com.example.languageflashcard
 
 import android.content.Intent
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import android.widget.Button
-import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,19 +28,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateActivityBasedOnLoginStatus(currentUser: FirebaseUser?) {
         currentUser?.let {
-            // TODO move to Home Activity, finish current activity
+            startActivity(Intent(this@MainActivity, NavigationDrawerActivity::class.java))
+            finish()
         } ?: kotlin.run {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
-        }
-        navigateToHamburgerMenu()
-    }
-
-    private fun navigateToHamburgerMenu() {
-        val helloWorld = findViewById<Button>(R.id.hello_world)
-        helloWorld.setOnClickListener {
-            val intent = Intent(this@MainActivity, NavigationDrawerActivity::class.java)
-            startActivity(intent)
         }
     }
 }

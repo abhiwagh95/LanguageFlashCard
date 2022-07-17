@@ -1,6 +1,7 @@
 package com.example.languageflashcard
 
 import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -78,12 +79,8 @@ class LoginActivity : AppCompatActivity() {
         firebaseAuth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val user = firebaseAuth.currentUser
-                    Toast.makeText(
-                        this,
-                        "${user?.displayName} \t ${user?.email}",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    startActivity(Intent(this@LoginActivity, NavigationDrawerActivity::class.java))
+                    finish()
                 } else {
                     Toast.makeText(this, "Firebase Authentication Failed", Toast.LENGTH_LONG).show()
                 }
