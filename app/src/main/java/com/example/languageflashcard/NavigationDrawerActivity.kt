@@ -11,12 +11,16 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.example.languageflashcard.databinding.ActivityNavigationDrawerBinding
+import com.example.languageflashcard.databinding.NavHeaderNavigationDrawerBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class NavigationDrawerActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityNavigationDrawerBinding
+    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +46,25 @@ class NavigationDrawerActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        setupNavigationDrawerHeaderUI()
+    }
+
+    private fun setupNavigationDrawerHeaderUI() {
+        val navHeaderView = binding.navView.getHeaderView(0)
+        val navHeaderBinding = NavHeaderNavigationDrawerBinding.bind(navHeaderView)
+
+        fetchAndBindUserDataForNavHeader(navHeaderBinding)
+    }
+
+    private fun fetchAndBindUserDataForNavHeader(binding: NavHeaderNavigationDrawerBinding) {
+        firebaseAuth = FirebaseAuth.getInstance()
+        val currentUser = firebaseAuth.currentUser
+        binding.userNameTv.text = currentUser?.displayName
+        binding.userEmailTv.text = currentUser?.email
+        Glide.with(this)
+            .load(currentUser?.photoUrl)
+            .circleCrop()
+            .into(binding.userProfilePicIv)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
