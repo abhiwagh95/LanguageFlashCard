@@ -1,14 +1,21 @@
 package com.example.languageflashcard.ui.home
 
-import android.widget.EditText
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.languageflashcard.model.Translate
+import com.example.languageflashcard.repository.FirebaseRepository
+import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class HomeViewModel : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val firebaseRepository: FirebaseRepository,
+    private val firebaseAuth: FirebaseAuth
+) :
+    ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "Please Enter Word To Translate:"
-    }
-    val text: LiveData<String> = _text
+    fun addTranslateToFirebase(translate: Translate) =
+        firebaseRepository.addTranslateToFirebase(translate)
+
+    fun currentUserUUID() = firebaseAuth.currentUser!!.uid
 }
