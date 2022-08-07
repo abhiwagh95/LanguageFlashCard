@@ -45,16 +45,26 @@ class HomeFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.buttonSearch.setOnClickListener {
-            val currentWord = binding.inputText.text.toString()
-            val translate = Translate(
-                originalWord = currentWord,
-                translatedWord = "translatedWord",
-                date = Timestamp.now(),
-                userId = homeViewModel.currentUserUUID(),
-                originalLanguage = "EN",
-                translatedLanguage = "JP"
-            )
-            addTranslateToFirebase(translate = translate)
+
+            getGoogleAPIResponse(binding.inputText.text.toString())
+
+//            val currentWord = binding.inputText.text.toString()
+//            val translate = Translate(
+//                originalWord = currentWord,
+//                translatedWord = "translatedWord",
+//                date = Timestamp.now(),
+//                userId = homeViewModel.currentUserUUID(),
+//                originalLanguage = "EN",
+//                translatedLanguage = "JP"
+//            )
+//            addTranslateToFirebase(translate = translate)
+        }
+    }
+
+    private fun getGoogleAPIResponse(query: String) {
+        lifecycleScope.launch {
+            val googleAPIResponse = homeViewModel.getGoogleAPIResponse(query = query)
+            binding.translatedTextview.text = googleAPIResponse.data.translations[0].translatedText
         }
     }
 
