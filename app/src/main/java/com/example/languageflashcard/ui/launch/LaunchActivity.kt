@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.languageflashcard.R
-import com.example.languageflashcard.ui.LoginActivity
+import com.example.languageflashcard.ui.login.LoginActivity
 import com.example.languageflashcard.ui.NavigationDrawerActivity
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
