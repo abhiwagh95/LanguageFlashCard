@@ -1,5 +1,7 @@
 package com.example.languageflashcard.di
 
+import com.example.languageflashcard.repository.FirebaseRepository
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
@@ -16,6 +18,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
+    }
+
+    @Provides
+    @Singleton
     fun provideFirebaseFirestore(): FirebaseFirestore {
         val firebaseFirestore = Firebase.firestore
         val settings = FirebaseFirestoreSettings.Builder()
@@ -25,5 +33,11 @@ object AppModule {
 
         firebaseFirestore.firestoreSettings = settings
         return firebaseFirestore
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseRepository(firebaseFirestore: FirebaseFirestore): FirebaseRepository {
+        return FirebaseRepository(firebaseFirestore = firebaseFirestore)
     }
 }

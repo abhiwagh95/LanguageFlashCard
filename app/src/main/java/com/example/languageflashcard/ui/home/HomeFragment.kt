@@ -4,50 +4,86 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.languageflashcard.databinding.FragmentHomeBinding
+import com.example.languageflashcard.model.Response
+import com.example.languageflashcard.model.Translate
+import com.google.firebase.Timestamp
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+    private val homeViewModel: HomeViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-        val textView: TextView = binding.textviewMessage
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
-        search()
-        return root
+        initUI()
+        return binding.root
     }
 
-    private fun search() {
-        val inputSearch: EditText = binding.inputText
-        val buttonSearch: Button = binding.buttonSearch
-        buttonSearch.text = "SEARCH"
-        buttonSearch.setOnClickListener {
-            Toast.makeText(
-                context,
-                "Result will be displayed shortly : " + inputSearch.text,
-                Toast.LENGTH_SHORT
-            ).show()
+    private fun initUI() {
+        binding.buttonSearch.text = "SEARCH"
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupClickListeners()
+    }
+
+    private fun setupClickListeners() {
+        binding.buttonSearch.setOnClickListener {
+            val currentWord = binding.inputText.text.toString()
+            val translate = Translate(
+                originalWord = currentWord,
+                translatedWord = "translatedWord",
+                date = Timestamp.now(),
+                userId = homeViewModel.currentUserUUID(),
+                originalLanguage = "EN",
+                translatedLanguage = "JP"
+            )
+            addTranslateToFirebase(translate = translate)
+        }
+    }
+
+    private fun addTranslateToFirebase(translate: Translate) {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeViewModel.addTranslateToFirebase(translate = translate)
+                    .collect { response ->
+                        when (response) {
+                            is Response.Loading -> binding.progressBar.visibility = View.VISIBLE
+                            is Response.Error -> {
+                                Toast.makeText(
+                                    context,
+                                    "Error Occurred",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                binding.progressBar.visibility = View.GONE
+                            }
+                            is Response.Success -> {
+                                Toast.makeText(
+                                    context,
+                                    "Success: ${response.data.id}",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                binding.progressBar.visibility = View.GONE
+                            }
+                        }
+                    }
+            }
         }
     }
 
