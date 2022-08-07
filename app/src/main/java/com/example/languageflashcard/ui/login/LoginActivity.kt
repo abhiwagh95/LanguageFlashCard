@@ -8,9 +8,7 @@ import android.widget.Toast
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.example.languageflashcard.R
 import com.example.languageflashcard.databinding.ActivityLoginBinding
 import com.example.languageflashcard.ui.NavigationDrawerActivity
@@ -73,21 +71,19 @@ class LoginActivity : AppCompatActivity() {
 
     private fun startGoogleSignInProcess() {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                try {
-                    val beginSignInResult = oneTapClient.beginSignIn(signInRequest).await()
-                    val intentSenderRequest =
-                        IntentSenderRequest.Builder(beginSignInResult.pendingIntent.intentSender)
-                            .build()
-                    googleSignInActivityResult.launch(intentSenderRequest)
-                } catch (exception: Exception) {
-                    Toast.makeText(
-                        baseContext,
-                        "Error occurred during Google SignIn ${exception.message}",
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
-                }
+            try {
+                val beginSignInResult = oneTapClient.beginSignIn(signInRequest).await()
+                val intentSenderRequest =
+                    IntentSenderRequest.Builder(beginSignInResult.pendingIntent.intentSender)
+                        .build()
+                googleSignInActivityResult.launch(intentSenderRequest)
+            } catch (exception: Exception) {
+                Toast.makeText(
+                    baseContext,
+                    "Error occurred during Google SignIn ${exception.message}",
+                    Toast.LENGTH_LONG
+                )
+                    .show()
             }
         }
     }
@@ -112,27 +108,25 @@ class LoginActivity : AppCompatActivity() {
 
     private fun loginWithFirebase(idToken: String) {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                changeProgressBarVisibility(View.VISIBLE)
-                val credential = GoogleAuthProvider.getCredential(idToken, null)
-                try {
-                    firebaseAuth.signInWithCredential(credential).await()
-                    changeProgressBarVisibility(View.GONE)
-                    startActivity(
-                        Intent(
-                            this@LoginActivity,
-                            NavigationDrawerActivity::class.java
-                        )
+            changeProgressBarVisibility(View.VISIBLE)
+            val credential = GoogleAuthProvider.getCredential(idToken, null)
+            try {
+                firebaseAuth.signInWithCredential(credential).await()
+                changeProgressBarVisibility(View.GONE)
+                startActivity(
+                    Intent(
+                        this@LoginActivity,
+                        NavigationDrawerActivity::class.java
                     )
-                    finish()
-                } catch (exception: Exception) {
-                    Toast.makeText(
-                        baseContext,
-                        "Firebase Authentication Failed ${exception.message}",
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
-                }
+                )
+                finish()
+            } catch (exception: Exception) {
+                Toast.makeText(
+                    baseContext,
+                    "Firebase Authentication Failed ${exception.message}",
+                    Toast.LENGTH_LONG
+                )
+                    .show()
             }
         }
     }
