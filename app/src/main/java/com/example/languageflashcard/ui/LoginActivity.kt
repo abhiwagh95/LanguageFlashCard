@@ -1,4 +1,4 @@
-package com.example.languageflashcard
+package com.example.languageflashcard.ui
 
 import android.app.Activity
 import android.content.Intent
@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import com.example.languageflashcard.R
 import com.example.languageflashcard.databinding.ActivityLoginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount

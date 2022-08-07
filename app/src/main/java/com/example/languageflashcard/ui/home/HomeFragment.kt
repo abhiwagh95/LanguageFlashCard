@@ -42,14 +42,13 @@ class HomeFragment : Fragment() {
         val inputSearch: EditText = binding.inputText
         val buttonSearch: Button = binding.buttonSearch
         buttonSearch.text = "SEARCH"
-            buttonSearch.setOnClickListener {
-                Toast.makeText(
-                    context,
-                    "Result will be displayed shortly : " + inputSearch.text,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
+        buttonSearch.setOnClickListener {
+            Toast.makeText(
+                context,
+                "Result will be displayed shortly : " + inputSearch.text,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     override fun onDestroyView() {

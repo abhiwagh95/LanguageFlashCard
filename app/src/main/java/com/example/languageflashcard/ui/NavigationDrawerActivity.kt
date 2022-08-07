@@ -1,4 +1,4 @@
-package com.example.languageflashcard
+package com.example.languageflashcard.ui
 
 import android.os.Bundle
 import android.view.Menu
@@ -12,6 +12,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.languageflashcard.R
 import com.example.languageflashcard.databinding.ActivityNavigationDrawerBinding
 import com.example.languageflashcard.databinding.NavHeaderNavigationDrawerBinding
 import com.google.firebase.auth.FirebaseAuth
