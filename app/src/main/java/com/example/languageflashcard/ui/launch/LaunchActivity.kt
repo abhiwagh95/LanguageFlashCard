@@ -1,17 +1,19 @@
-package com.example.languageflashcard.ui
+package com.example.languageflashcard.ui.launch
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.languageflashcard.R
+import com.example.languageflashcard.ui.LoginActivity
+import com.example.languageflashcard.ui.NavigationDrawerActivity
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class LaunchActivity : AppCompatActivity() {
 
-    private val mainViewModel: MainViewModel by viewModels()
+    private val mainViewModel: LaunchViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateActivityBasedOnLoginStatus(currentUser: FirebaseUser?) {
         currentUser?.let {
-            startActivity(Intent(this@MainActivity, NavigationDrawerActivity::class.java))
+            startActivity(Intent(this@LaunchActivity, NavigationDrawerActivity::class.java))
             finish()
         } ?: kotlin.run {
             startActivity(Intent(this, LoginActivity::class.java))
