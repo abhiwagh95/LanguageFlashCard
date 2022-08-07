@@ -1,7 +1,13 @@
 package com.example.languageflashcard.repository
 
 import com.example.languageflashcard.BuildConfig
+import com.example.languageflashcard.model.Response
 import com.example.languageflashcard.repository.retrofit.GoogleAPIService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GoogleAPIRepository @Inject constructor(
@@ -12,12 +18,17 @@ class GoogleAPIRepository @Inject constructor(
         query: String,
         target: String,
         source: String
-    ) = googleAPIService.getGoogleAPIResponse(
-        key = BuildConfig.GOOGLE_API_KEY,
-        query = query,
-        target = target,
-        format = "text",
-        source = source
-    )
+    ) = flow {
+        emit(Response.Loading())
 
+        val googleAPIResponse = withContext(Dispatchers.Default) {
+            googleAPIService.getGoogleAPIResponse(
+                query = query, target = target, source = source,
+                format = "text", key = BuildConfig.GOOGLE_API_KEY
+            )
+        }
+        emit(Response.Success(googleAPIResponse))
+    }.catch {
+        emit(Response.Error(it.message.toString()))
+    }.flowOn(Dispatchers.IO)
 }

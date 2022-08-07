@@ -30,12 +30,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        initUI()
         return binding.root
-    }
-
-    private fun initUI() {
-        binding.buttonSearch.text = "SEARCH"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,19 +40,14 @@ class HomeFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.buttonSearch.setOnClickListener {
-
+            if (binding.inputText.text.toString().isEmpty()) {
+                Toast.makeText(context, "Please enter word to search", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
             getGoogleAPIResponse(binding.inputText.text.toString())
-
-//            val currentWord = binding.inputText.text.toString()
-//            val translate = Translate(
-//                originalWord = currentWord,
-//                translatedWord = "translatedWord",
-//                date = Timestamp.now(),
-//                userId = homeViewModel.currentUserUUID(),
-//                originalLanguage = "EN",
-//                translatedLanguage = "JP"
-//            )
-//            addTranslateToFirebase(translate = translate)
+        }
+        binding.buttonAddToFirestore.setOnClickListener {
+            addTranslateToFirebase()
         }
     }
 
@@ -69,16 +59,24 @@ class HomeFragment : Fragment() {
                         is Response.Loading -> binding.progressBar.visibility = View.VISIBLE
                         is Response.Error -> {
                             binding.progressBar.visibility = View.GONE
+                            binding.translatedTextview.visibility = View.GONE
                             Toast.makeText(context, "Error Occurred", Toast.LENGTH_SHORT).show()
                         }
                         is Response.Success -> {
                             val translatedWord = response.data.data.translations[0].translatedText
                             binding.progressBar.visibility = View.GONE
+                            binding.translatedTextview.visibility = View.VISIBLE
+                            binding.buttonSearch.visibility = View.GONE
+                            binding.buttonAddToFirestore.visibility = View.VISIBLE
                             binding.translatedTextview.text = translatedWord
 
-                            addTranslateToFirebase(
+                            homeViewModel.currentTranslate = Translate(
                                 originalWord = query,
-                                translatedWord = translatedWord
+                                translatedWord = translatedWord,
+                                date = Timestamp.now(),
+                                userId = homeViewModel.currentUserUUID()!!,
+                                originalLanguage = "en",
+                                translatedLanguage = "ja"
                             )
                         }
                     }
@@ -88,19 +86,10 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun addTranslateToFirebase(originalWord: String, translatedWord: String) {
-        val translate = Translate(
-            originalWord = originalWord,
-            translatedWord = translatedWord,
-            date = Timestamp.now(),
-            userId = homeViewModel.currentUserUUID(),
-            originalLanguage = "en",
-            translatedLanguage = "ja"
-        )
-
+    private fun addTranslateToFirebase() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                homeViewModel.addTranslateToFirebase(translate = translate)
+                homeViewModel.addTranslateToFirebase(translate = homeViewModel.currentTranslate)
                     .collect { response ->
                         when (response) {
                             is Response.Loading -> binding.progressBar.visibility = View.VISIBLE
